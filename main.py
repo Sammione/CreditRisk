@@ -14,13 +14,13 @@ app = FastAPI(
 # Allow frontend connection
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],  # You can restrict this to your frontend domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-#  Security
+# Security
 security = HTTPBearer()
 
 
@@ -49,7 +49,7 @@ def fetch_all_records(token: str):
     page = 1
     total_pages = 1
 
-    print("\n📡 Fetching records across pages...")
+    print("\n Fetching records across pages...")
 
     while page <= total_pages:
         url = f"{BASE_URL}{RECORDS_ENDPOINT}?page={page}"
@@ -88,7 +88,7 @@ def fetch_all_records(token: str):
             page += 1
 
         except Exception as e:
-            print(f" Error fetching page {page}: {e}")
+            print(f"Error fetching page {page}: {e}")
             break
 
     return all_results
@@ -111,11 +111,14 @@ def lesson_bot():
 # ---------------------- API Endpoints ----------------------
 @app.get("/")
 def root():
-    """Show welcome message when the bot icon is opened."""
-    return {
-        "welcome": lesson_bot(),
-        "message": "Welcome to LUAN — Infracredit’s AI Lesson Learnt API 🚀"
-    }
+    """Root endpoint for API health/status."""
+    return {"message": "Welcome to LUAN — Infracredit’s AI Lesson Learnt API"}
+
+
+@app.get("/bot-welcome")
+def bot_welcome():
+    """Endpoint for bot frontend to display welcome message when opened."""
+    return {"welcome": lesson_bot()}
 
 
 @app.get("/records")
